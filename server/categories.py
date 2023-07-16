@@ -47,6 +47,7 @@ def get_category_by_id(category_id):
     else:
         return jsonify({'message': 'Category not found'})
 
+#create new category
 @app.route('/categories', methods=['POST'])
 def create_category():
     connection = db_connection()
@@ -61,6 +62,7 @@ def create_category():
 
     return jsonify({'message': 'New category created'})
 
+#delete category
 
 @app.route('/categories/<int:category_id>', methods=['DELETE'])
 def delete_category(category_id):
@@ -84,6 +86,34 @@ def delete_category(category_id):
 
     return jsonify({'message': 'Category deleted'})
 
+#update the name of the category
+@app.route('/categories/<int:category_id>', methods=['PUT'])
+def update_category(category_id):
+    connection = db_connection()
+    cursor = connection.cursor()
+
+    # Check if the category exists
+    cursor.execute("SELECT * FROM categories WHERE category_id = %s", (category_id,))
+    category = cursor.fetchone()
+
+    if category is None:
+        cursor.close()
+        connection.close()
+        return jsonify({'message': 'Category not found'})
+
+    # Get the new category name from the request body
+    data = request.get_json()
+    new_category_name = data.get('category_name')
+
+    # Update the category name
+    cursor.execute("UPDATE categories SET category_name = %s WHERE category_id = %s", (new_category_name, category_id))
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
+    return jsonify({'message': 'Category updated'})
 
 if __name__ == '__main__':
     app.run()
+
