@@ -114,6 +114,42 @@ def add_student():
 
     return jsonify({'message': 'Student added successfully'}), 201  # 201 Created
 
+#update student 
+
+@app.route('/students/<int:record_id>', methods=['PUT'])
+def update_student(record_id):
+    connection = db_connection()
+    if not connection:
+        return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
+
+    connection.autocommit = True
+    cursor = connection.cursor()
+
+    # Check if the student record exists
+    cursor.execute("SELECT * FROM students WHERE student_id = %s", (record_id,))
+    record = cursor.fetchone()
+
+    if not record:
+        connection.close()
+        return jsonify({'message': 'Record not Found'}), 404  # 404 Not Found - Resource not found
+
+    # Get the updated data from the request
+    data = request.get_json()
+    student_name = data.get('student_name')
+    student_email = data.get('student_email')
+
+    if not student_name or not student_email:
+        connection.close()
+        return jsonify({'message': 'Invalid data. Both student_name and student_email are required.'}), 400  # 400 Bad Request
+
+    # Update the student record
+    cursor.execute("UPDATE students SET student_name = %s, student_email = %s WHERE student_id = %s",
+                   (student_name, student_email, record_id))
+    connection.commit()
+    connection.close()
+
+    return jsonify({'message': 'Record updated successfully'}), 200  # 200 OK - Successful request
+
 
 if __name__ == '__main__':
     app.run()
