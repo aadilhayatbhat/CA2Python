@@ -61,5 +61,29 @@ def create_category():
 
     return jsonify({'message': 'New category created'})
 
+
+@app.route('/categories/<int:category_id>', methods=['DELETE'])
+def delete_category(category_id):
+    connection = db_connection()
+    cursor = connection.cursor()
+
+    # Check if the category exists
+    cursor.execute("SELECT * FROM categories WHERE category_id = %s", (category_id,))
+    category = cursor.fetchone()
+
+    if category is None:
+        cursor.close()
+        connection.close()
+        return jsonify({'message': 'Category not found'})
+
+    # Delete the category
+    cursor.execute("DELETE FROM categories WHERE category_id = %s", (category_id,))
+    connection.commit()
+    cursor.close()
+    connection.close()
+
+    return jsonify({'message': 'Category deleted'})
+
+
 if __name__ == '__main__':
     app.run()
