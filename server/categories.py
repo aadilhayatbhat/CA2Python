@@ -47,6 +47,21 @@ def get_category_by_id(category_id):
     else:
         return jsonify({'message': 'Category not found'})
 
+@app.route('/categories/<string:category_name>', methods=['GET'])
+def get_category_by_name(category_name):
+    connection = db_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM categories WHERE category_name = %s", (category_name,))
+    record = cursor.fetchone()
+    cursor.close()
+    connection.close()
+
+    if record:
+        record_dict = {'category_id': record[0], 'category_name': record[1]}
+        return jsonify(record_dict)
+    else:
+        return jsonify({'message': 'Category not found'})
 
 if __name__ == '__main__':
     app.run()
