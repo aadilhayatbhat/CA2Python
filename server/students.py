@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import mysql.connector
 from flask_cors import CORS
 
@@ -91,6 +91,29 @@ def delete_student(record_id):
             return jsonify({'message': 'An error occurred while deleting data'}), 500  # 500 Internal Server Error
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
+
+@app.route('/students', methods=['POST'])
+def add_student():
+    connection = db_connection()
+    if not connection:
+        return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
+
+    data = request.get_json()
+    student_name = data.get('student_name')
+    student_email = data.get('student_email')
+
+    if not student_name or not student_email:
+        return jsonify({'message': 'Invalid data. Both student_name and student_email are required.'}), 400  # 400 Bad Request
+
+    cursor = connection.cursor()
+    cursor.execute("INSERT INTO students (student_name, student_email) VALUES (%s, %s)", (student_name, student_email,))
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
+    return jsonify({'message': 'Student added successfully'}), 201  # 201 Created
+
 
 if __name__ == '__main__':
     app.run()
