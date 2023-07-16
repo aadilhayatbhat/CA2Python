@@ -5,21 +5,18 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-from flask import Flask, jsonify
-import mysql.connector
-from flask_cors import CORS
-
-app = Flask(__name__)
-CORS(app)
-
-@app.route('/categories', methods=['GET'])
-def search_record():
+def db_connection():
     connection = mysql.connector.connect(
         host='63.34.171.72',
         user='library',
         password='password',
         database='library'
     )
+    return connection
+
+@app.route('/categories', methods=['GET'])
+def get_all_categories():
+    connection = db_connection()
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM categories")
     records = cursor.fetchall()
@@ -34,22 +31,22 @@ def search_record():
 
     return jsonify(record_list)
 
-# #Api to search record by ID 
-# @app.route('/categories/<int:record_id>',methods=['GET'])
-# def search_record(record_id):
-#     try :
-#         connetion = db_connection
-#         cursor = connection.cursor()
+@app.route('/categories/<int:category_id>', methods=['GET'])
+def get_category_by_id(category_id):
+    connection = db_connection()
+    cursor = connection.cursor()
 
+    cursor.execute("SELECT * FROM categories WHERE category_id = %s", (category_id,))
+    record = cursor.fetchone()
+    cursor.close()
+    connection.close()
 
-#         cursor.execute("SELECT * FROM categories WHERE id = %s",(record_id))
-#         record = cursor.fetchone()
-#         cursor.close()
-
-#         if record : 
+    if record:
+        record_dict = {'category_id': record[0], 'category_name': record[1]}
+        return jsonify(record_dict)
+    else:
+        return jsonify({'message': 'Category not found'})
 
 
 if __name__ == '__main__':
     app.run()
-
-
