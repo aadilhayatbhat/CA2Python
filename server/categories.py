@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, request, jsonify
 import mysql.connector
 from flask_cors import CORS
 
@@ -47,21 +47,19 @@ def get_category_by_id(category_id):
     else:
         return jsonify({'message': 'Category not found'})
 
-@app.route('/categories/<string:category_name>', methods=['GET'])
-def get_category_by_name(category_name):
+@app.route('/categories', methods=['POST'])
+def create_category():
     connection = db_connection()
     cursor = connection.cursor()
+    data = request.get_json()
+    category_name = data['category_name']
 
-    cursor.execute("SELECT * FROM categories WHERE category_name = %s", (category_name,))
-    record = cursor.fetchone()
+    cursor.execute("INSERT INTO categories (category_name) VALUES (%s)", (category_name,))
+    connection.commit()
     cursor.close()
     connection.close()
 
-    if record:
-        record_dict = {'category_id': record[0], 'category_name': record[1]}
-        return jsonify(record_dict)
-    else:
-        return jsonify({'message': 'Category not found'})
+    return jsonify({'message': 'New category created'})
 
 if __name__ == '__main__':
     app.run()
