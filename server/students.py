@@ -52,5 +52,22 @@ def search_record_by_id(record_id):
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
 
+
+@app.route('/students/<string:student_name>', methods=['GET'])
+def get_student_by_name(student_name):
+    connection = db_connection()
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM students WHERE student_name = %s", (student_name,))
+    record = cursor.fetchone()
+    cursor.close()
+    connection.close()
+
+    if record:
+        record_dict = {'student_id': record[0], 'student_name': record[1], 'student_email' :record[2]}
+        return jsonify(record_dict)
+    else:
+        return jsonify({'message': 'student not found'})
 if __name__ == '__main__':
     app.run()
+
