@@ -151,5 +151,6 @@ def update_student(record_id):
     return jsonify({'message': 'Record updated successfully'}), 200  # 200 OK - Successful request
 
 
+
 if __name__ == '__main__':
     app.run()

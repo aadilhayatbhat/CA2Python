@@ -68,6 +68,36 @@ def search_record_by_id(record_id):
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
     
 
+#API to delete the books
+
+@app.route('/books/<int:record_id>', methods=['DELETE'])
+def delete_book(record_id):
+    connection = db_connection()
+    if connection:
+        try:
+            connection.autocommit = True
+            cursor = connection.cursor()
+
+            # Check if the book record exists
+            cursor.execute("SELECT * FROM books WHERE book_id = %s", (record_id,))
+            record = cursor.fetchone()
+
+            if not record:
+                connection.close()
+                return jsonify({'message': 'Record not Found'}), 404  # 404 Not Found - Resource not found
+
+            # Delete the book record
+            cursor.execute("DELETE FROM books WHERE book_id = %s", (record_id,))
+            connection.commit()
+            connection.close()
+
+            return jsonify({'message': 'Book deleted successfully'}), 200  # 200 OK - Successful request
+        except mysql.connector.Error as e:
+            print(f"Error deleting book from the database: {e}")
+            return jsonify({'message': 'An error occurred while deleting data'}), 500  # 500 Internal Server Error
+    else:
+        return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
+
 
 if __name__ == '__main__':
     app.run()
