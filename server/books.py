@@ -68,36 +68,51 @@ def search_record_by_id(record_id):
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
     
 
-#API to delete the books
-
-@app.route('/books/<int:record_id>', methods=['DELETE'])
-def delete_book(record_id):
+def check_category_id_exist(category_id):
     connection = db_connection()
     if connection:
         try:
-            connection.autocommit = True
             cursor = connection.cursor()
-
-            # Check if the book record exists
-            cursor.execute("SELECT * FROM books WHERE book_id = %s", (record_id,))
+            cursor.execute("SELECT * FROM categories WHERE category_id = %s", (category_id,))
             record = cursor.fetchone()
-
-            if not record:
-                connection.close()
-                return jsonify({'message': 'Record not Found'}), 404  # 404 Not Found - Resource not found
-
-            # Delete the book record
-            cursor.execute("DELETE FROM books WHERE book_id = %s", (record_id,))
-            connection.commit()
+            cursor.close()
             connection.close()
-
-            return jsonify({'message': 'Book deleted successfully'}), 200  # 200 OK - Successful request
+            return True if record else False
         except mysql.connector.Error as e:
-            print(f"Error deleting book from the database: {e}")
-            return jsonify({'message': 'An error occurred while deleting data'}), 500  # 500 Internal Server Error
+            print(f"Error checking category_id in the database: {e}")
+            return False
     else:
+        return False
+
+
+
+@app.route('/books', methods=['POST'])
+def add_book():
+    connection = db_connection()
+    if not connection:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
 
+    data = request.get_json()
+    title = data.get('title')
+    author = data.get('author')
+    category_id = data.get('category_id')
+    available_books = data.get('available_books')
+
+# Check if category_id exist in the database
+    if not check_category_id_exist(category_id):
+            return jsonify({'message': 'Invalid category_id'}), 400  # 400 Bad Request
+
+    if not title or not author or not category_id or available_books is None:
+        return jsonify({'message': 'Invalid data. All fields (title, author, category_id, available_books) are required.'}), 400  # 400 Bad Request
+
+    cursor = connection.cursor()
+    cursor.execute("INSERT INTO books (title, author, category_id, available_books) VALUES (%s, %s, %s, %s)", (title, author, category_id, available_books,))
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
+    return jsonify({'message': 'Book added successfully'}), 201  # 201 Created
 
 if __name__ == '__main__':
     app.run()
