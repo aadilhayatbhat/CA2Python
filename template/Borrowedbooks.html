@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
+    <title>BooksForAll</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
 </head>
@@ -20,47 +20,77 @@
             <div class="collapse navbar-collapse" id="navbarNavDropdown">
                 <ul class="navbar-nav">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Categories</a>
+                        <a class="nav-link" href="categories.html">Categories</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Books</a>
+                        <a class="nav-link" href="books.html">Books</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Book Reviews</a>
+                        <a class="nav-link" href="books.html">Book Reviews</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Students</a>
+                        <a class="nav-link" href="students.html">Students</a>
                     
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Books</a>
-                    </li>
+                    
                     <li class="nav-item">
                         <a class="nav-link" href="#">Borrowed Books</a>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
-                            aria-haspopup="true" aria-expanded="false">
-                            Dropdown link
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                    </li>
+                  
                     
                 </ul>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
+                
             </div>
         </div>
     </nav>
+    <div class="container mt-4">
+        <h1>Borrowed Books</h1>
+        <table class="table table-striped" id="borrowedBookTable">
+            <thead>
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Student ID</th>
+                    <th>Book ID</th>
+                    <th>Borrow Date</th>
+                    <th>Due Date</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            url: 'http://127.0.0.1:5000/borrowed_books',
+            type: 'GET',
+            success: function(data) {
+                var borrowedBooks = data;
+                var borrowedBookTable = $('#borrowedBookTable').find('tbody');
+                borrowedBookTable.empty();
+
+                borrowedBooks.forEach(function(borrowedBook) {
+                    var row = $('<tr>');
+                    row.append($('<td>').text(borrowedBook.transaction_id));
+                    row.append($('<td>').text(borrowedBook.student_id));
+                    row.append($('<td>').text(borrowedBook.book_id));
+                    row.append($('<td>').text(borrowedBook.borrow_date));
+                    row.append($('<td>').text(borrowedBook.due_date));
+                    borrowedBookTable.append(row);
+                });
+            },
+            error: function() {
+                alert('Failed to retrieve borrowed books.');
+            }
+        });
+    });
+</script>
+
+    
 </body>
 
     <!-- Scripts -->
