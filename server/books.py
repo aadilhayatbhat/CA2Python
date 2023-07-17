@@ -114,5 +114,39 @@ def add_book():
 
     return jsonify({'message': 'Book added successfully'}), 201  # 201 Created
 
+
+#delete
+
+@app.route('/books/<int:record_id>', methods=['DELETE'])
+def delete_book(record_id):
+    connection = db_connection()
+
+    if not connection:
+        return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
+
+    cursor = connection.cursor()
+
+    try:
+        # Check if the book exists before attempting to delete it
+        cursor.execute("SELECT * FROM books WHERE book_id = %s", (record_id,))
+        book = cursor.fetchone()
+        if not book:
+            return jsonify({'message': 'Book not found'}), 404  # 404 Not Found - Resource not found
+
+        # Delete book reviews first (Assuming there's a foreign key constraint)
+        cursor.execute("DELETE FROM BookReviews WHERE book_id = %s", (record_id,))
+
+        # Now delete the book record
+        cursor.execute("DELETE FROM books WHERE book_id = %s", (record_id,))
+        connection.commit()
+
+        return jsonify({'message': 'Book deleted successfully'}), 200  # 200 OK
+    except mysql.connector.Error as e:
+        print(f"Error deleting the book: {e}")
+        return jsonify({'message': 'An error occurred while deleting the book'}), 500  # 500 Internal Server Error
+    finally:
+        cursor.close()
+        connection.close()
+        
 if __name__ == '__main__':
     app.run()
