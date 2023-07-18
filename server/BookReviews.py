@@ -52,7 +52,7 @@ def create_book_review():
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
 
     cursor = connection.cursor()
-    insert_query = "INSERT INTO BookReviews (review_id,student_id,book_id, comments) VALUES (%s, %s, %s, %s)"
+    insert_query = "INSERT INTO BookReviews (review_id,student_id,book_id,comments) VALUES (%s, %s, %s, %s)"
     values = (review_id,student_id,book_id,comments)
 
     try:
