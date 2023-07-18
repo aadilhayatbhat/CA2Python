@@ -87,7 +87,33 @@ def add_student():
     return jsonify({'message': 'user added successfully'}), 201  # 201 Created
 
 
+@app.route('/users/<int:record_id>', methods=['DELETE'])
+def delete_student(record_id):
+    connection = db_connection()
+    if connection:
+        try:
+            connection.autocommit = True
+            cursor = connection.cursor()
 
+            # Check if the student record exists
+            cursor.execute("SELECT * FROM users WHERE user_id = %s", (record_id,))
+            record = cursor.fetchone()
+
+            if not record:
+                connection.close()
+                return jsonify({'message': 'Record not Found'}), 404  # 404 Not Found - Resource not found
+
+            # Delete the student record
+            cursor.execute("DELETE FROM users WHERE user_id = %s", (record_id,))
+            connection.commit()
+            connection.close()
+
+            return jsonify({'message': 'user deleted successfully'}), 200  # 200 OK - Successful request
+        except mysql.connector.Error as e:
+            print(f"Error deleting data from the database: {e}")
+            return jsonify({'message': 'An error occurred while deleting data'}), 500  # 500 Internal Server Error
+    else:
+        return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
 
 if __name__ == '__main__':
     app.run()
