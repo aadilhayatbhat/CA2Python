@@ -19,7 +19,7 @@ def db_connection():
         return None
     
 @app.route('/Employees', methods=['GET'])
-def get_all_students():
+def get_all_employees():
     connection = db_connection()
     if connection:
         try:
@@ -64,6 +64,68 @@ def search_record_by_id(record_id):
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
 
+@app.route('/Employees', methods=['POST'])
+def add_employee():
+    try:
+        connection = db_connection()
+        if not connection:
+            return jsonify({'error': 'Database connection error'}), 500  # 500 Internal Server Error
+
+        data = request.get_json()
+        name = data.get('name')
+        position = data.get('position')
+        email = data.get('email')
+        phone = data.get('phone')
+        
+
+        if not name or not email:
+            return jsonify({'error': 'Invalid data. Both name and email are required.'}), 400  # 400 Bad Request
+
+        cursor = connection.cursor()
+
+        cursor.execute("INSERT INTO Employees (name, position, email, phone) VALUES (%s, %s, %s, %s)", (name, position, email, phone))
+
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+        return jsonify({'message': 'Employee added successfully'}), 201  # 201 Created
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500  # 500 Internal Server Error
     
+    
+@app.route('/Employees/<int:record_id>', methods=['DELETE'])
+def delete_employee(record_id):
+    connection = db_connection()
+    if connection:
+        try:
+            connection.autocommit = True
+            cursor = connection.cursor()
+
+            # Check if the user record exists
+            cursor.execute("SELECT * FROM Employees WHERE employee_id = %s", (record_id,))
+            record = cursor.fetchone()
+
+            if not record:
+                connection.close()
+                return jsonify({'message': 'Record not Found'}), 404  # 404 Not Found - Resource not found
+
+            # Delete the Employee record
+            cursor.execute("DELETE FROM Employees WHERE employee_id = %s", (record_id,))
+            connection.commit()
+            connection.close()
+
+            return jsonify({'message': 'Employee deleted successfully'}), 200  # 200 OK - Successful request
+        except mysql.connector.Error as e:
+            print(f"Error deleting data from the database: {e}")
+            return jsonify({'message': 'An error occurred while deleting data'}), 500  # 500 Internal Server Error
+    else:
+        return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error 
+
+
+
+
+
 if __name__ == '__main__':
     app.run()
