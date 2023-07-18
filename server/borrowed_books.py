@@ -133,6 +133,68 @@ def create_borrowed_book():
             return jsonify({'message': 'An error occurred while creating borrowed book'}), 500  # 500 Internal Server Error
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
+    
+
+@app.route('/borrowed_books/<int:record_id>', methods=['PUT'])
+def update_borrowed_book(record_id):
+    connection = db_connection()
+    if connection:
+        try:
+            data = request.get_json()
+            student_id = data.get('student_id')
+            book_id = data.get('book_id')
+            borrow_date = data.get('borrow_date')
+            due_date = data.get('due_date', None)  # Use None as the default value
+
+            # Check if the record exists in the database
+            cursor = connection.cursor()
+            cursor.execute("SELECT * FROM borrowed_books WHERE transaction_id = %s", (record_id,))
+            record = cursor.fetchone()
+
+            if not record:
+                cursor.close()
+                connection.close()
+                return jsonify({'message': 'Record not found'}), 404  # 404 Not Found - Resource not found
+
+            # Check if the updated student_id and book_id exist in their respective tables
+            if student_id is not None and not check_student_id_exist(student_id):
+                return jsonify({'message': 'Invalid student_id'}), 400  # 400 Bad Request
+            if book_id is not None and not check_book_id_exist(book_id):
+                return jsonify({'message': 'Invalid book_id'}), 400  # 400 Bad Request
+
+            # Update the borrowed book record
+            update_query = "UPDATE borrowed_books SET "
+            updates = []
+            values = []
+
+            if student_id is not None:
+                updates.append("student_id = %s")
+                values.append(student_id)
+            if book_id is not None:
+                updates.append("book_id = %s")
+                values.append(book_id)
+            if borrow_date is not None:
+                updates.append("borrow_date = %s")
+                values.append(borrow_date)
+            if due_date is not None:
+                updates.append("due_date = %s")
+                values.append(due_date)
+
+            update_query += ", ".join(updates)
+            update_query += " WHERE transaction_id = %s"
+            values.append(record_id)
+
+            cursor.execute(update_query, tuple(values))
+            connection.commit()
+            cursor.close()
+            connection.close()
+
+            return jsonify({'message': 'Borrowed book record updated successfully'}), 200  # 200 OK - Successful request
+        except mysql.connector.Error as e:
+            print(f"Error updating data in the database: {e}")
+            return jsonify({'message': 'An error occurred while updating borrowed book record'}), 500  # 500 Internal Server Error
+    else:
+        return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
 
 if __name__ == '__main__':
     app.run()
