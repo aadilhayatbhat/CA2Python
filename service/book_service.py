@@ -1,5 +1,5 @@
 import mysql.connector
-from book_model import BookReview
+from model.book import BookReview
 
 def db_connection():
     try:
