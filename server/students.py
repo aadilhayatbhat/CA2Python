@@ -114,7 +114,7 @@ def add_student():
 
     return jsonify({'message': 'Student added successfully'}), 201  # 201 Created
 
-#update student 
+#update books 
 
 @app.route('/students/<int:record_id>', methods=['PUT'])
 def update_student(record_id):

@@ -148,5 +148,48 @@ def delete_book(record_id):
         cursor.close()
         connection.close()
 
+@app.route('/books/<int:record_id>', methods=['PUT'])
+def update_book(record_id):
+    connection = db_connection()
+    if not connection:
+        return jsonify({'message': 'Database connection error'}), 500
+
+    connection.autocommit = True
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT * FROM books WHERE book_id = %s", (record_id,))
+    record = cursor.fetchone()
+
+    if not record:
+        cursor.close()
+        connection.close()
+        return jsonify({'message': 'Book not Found'}), 404
+
+    data = request.get_json()
+    title = data.get('title')
+    author = data.get('author')
+    category_id = data.get('category_id')
+    available_books = data.get('available_books')
+
+    if not title or not author or not category_id or available_books is None:
+        cursor.close()
+        connection.close()
+        return jsonify({'message': 'Invalid data. All fields (title, author, category_id, available_books) are required.'}), 400
+
+    if not check_category_id_exist(category_id):
+        return jsonify({'message': 'Invalid category_id'}), 400
+
+    try:
+        cursor.execute("UPDATE books SET title = %s, author = %s, category_id = %s, available_books = %s WHERE book_id = %s",
+                       (title, author, category_id, available_books, record_id))
+        connection.commit()
+        cursor.close()
+        connection.close()
+
+        return jsonify({'message': 'Book updated successfully'}), 200
+    except mysql.connector.Error as e:
+        return jsonify({'message': 'An error occurred while updating the book'}), 500
+
+
 if __name__ == '__main__':
     app.run()
