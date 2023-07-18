@@ -42,6 +42,7 @@ def get_all_book_reviews():
 @app.route('/bookreview', methods=['POST'])
 def create_book_review():
     data = request.get_json()
+    review_id = data.get('review_id')
     book_id = data.get('book_id')
     comments = data.get('comments')
     student_id = data.get('student_id')
@@ -51,8 +52,8 @@ def create_book_review():
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
 
     cursor = connection.cursor()
-    insert_query = "INSERT INTO BookReviews (student_id,book_id, comments) VALUES (%s, %s)"
-    values = (book_id, comments)
+    insert_query = "INSERT INTO BookReviews (review_id,student_id,book_id, comments) VALUES (%s, %s, %s, %s)"
+    values = (review_id,student_id,book_id,comments)
 
     try:
         cursor.execute(insert_query, values)
