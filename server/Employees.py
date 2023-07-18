@@ -93,7 +93,35 @@ def add_employee():
         return jsonify({'message': 'Employee added successfully'}), 201  # 201 Created
     except Exception as e:
         return jsonify({'error': str(e)}), 500  # 500 Internal Server Error
- 
+    
+    
+@app.route('/Employees/<int:record_id>', methods=['DELETE'])
+def delete_employee(record_id):
+    connection = db_connection()
+    if connection:
+        try:
+            connection.autocommit = True
+            cursor = connection.cursor()
+
+            # Check if the user record exists
+            cursor.execute("SELECT * FROM Employees WHERE employee_id = %s", (record_id,))
+            record = cursor.fetchone()
+
+            if not record:
+                connection.close()
+                return jsonify({'message': 'Record not Found'}), 404  # 404 Not Found - Resource not found
+
+            # Delete the Employee record
+            cursor.execute("DELETE FROM Employees WHERE employee_id = %s", (record_id,))
+            connection.commit()
+            connection.close()
+
+            return jsonify({'message': 'Employee deleted successfully'}), 200  # 200 OK - Successful request
+        except mysql.connector.Error as e:
+            print(f"Error deleting data from the database: {e}")
+            return jsonify({'message': 'An error occurred while deleting data'}), 500  # 500 Internal Server Error
+    else:
+        return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error 
 
 
 
