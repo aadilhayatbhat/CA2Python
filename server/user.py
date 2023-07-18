@@ -64,6 +64,28 @@ def search_record_by_id(record_id):
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
     
+@app.route('/users', methods=['POST'])
+def add_student():
+    connection = db_connection()
+    if not connection:
+        return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
+
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({'message': 'Invalid data. Both username and password are required.'}), 400  # 400 Bad Request
+
+    cursor = connection.cursor()
+    cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, password,))
+    connection.commit()
+
+    cursor.close()
+    connection.close()
+
+    return jsonify({'message': 'user added successfully'}), 201  # 201 Created
+
 
 
 
