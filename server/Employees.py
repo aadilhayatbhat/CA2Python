@@ -19,7 +19,7 @@ def db_connection():
         return None
     
 @app.route('/Employees', methods=['GET'])
-def get_all_students():
+def get_all_employees():
     connection = db_connection()
     if connection:
         try:
@@ -64,6 +64,40 @@ def search_record_by_id(record_id):
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
 
-    
+@app.route('/Employees', methods=['POST'])
+def add_employee():
+    try:
+        connection = db_connection()
+        if not connection:
+            return jsonify({'error': 'Database connection error'}), 500  # 500 Internal Server Error
+
+        data = request.get_json()
+        name = data.get('name')
+        position = data.get('position')
+        email = data.get('email')
+        phone = data.get('phone')
+        
+
+        if not name or not email:
+            return jsonify({'error': 'Invalid data. Both name and email are required.'}), 400  # 400 Bad Request
+
+        cursor = connection.cursor()
+
+        cursor.execute("INSERT INTO Employees (name, position, email, phone) VALUES (%s, %s, %s, %s)", (name, position, email, phone))
+
+        connection.commit()
+
+        cursor.close()
+        connection.close()
+
+        return jsonify({'message': 'Employee added successfully'}), 201  # 201 Created
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500  # 500 Internal Server Error
+ 
+
+
+
+
+
 if __name__ == '__main__':
     app.run()

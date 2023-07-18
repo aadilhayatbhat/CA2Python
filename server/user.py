@@ -19,7 +19,7 @@ def db_connection():
         return None
 
 @app.route('/users', methods=['GET'])
-def get_all_students():
+def get_all_users():
     connection = db_connection()
     if connection:
         try:
@@ -65,7 +65,7 @@ def search_record_by_id(record_id):
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
     
 @app.route('/users', methods=['POST'])
-def add_student():
+def add_user():
     connection = db_connection()
     if not connection:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
@@ -88,14 +88,14 @@ def add_student():
 
 
 @app.route('/users/<int:record_id>', methods=['DELETE'])
-def delete_student(record_id):
+def delete_user(record_id):
     connection = db_connection()
     if connection:
         try:
             connection.autocommit = True
             cursor = connection.cursor()
 
-            # Check if the student record exists
+            # Check if the user record exists
             cursor.execute("SELECT * FROM users WHERE user_id = %s", (record_id,))
             record = cursor.fetchone()
 
@@ -103,7 +103,7 @@ def delete_student(record_id):
                 connection.close()
                 return jsonify({'message': 'Record not Found'}), 404  # 404 Not Found - Resource not found
 
-            # Delete the student record
+            # Delete the user record
             cursor.execute("DELETE FROM users WHERE user_id = %s", (record_id,))
             connection.commit()
             connection.close()
