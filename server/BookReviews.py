@@ -1,9 +1,7 @@
-from flask import Flask, jsonify, request
+from flask import Blueprint, jsonify, request
 import mysql.connector
-from flask_cors import CORS
 
-app = Flask(__name__)
-CORS(app)
+book_reviews_bp = Blueprint('book_reviews', __name__)
 
 def db_connection():
     try:
@@ -19,7 +17,7 @@ def db_connection():
         return None
     
 
-@app.route('/bookreview', methods=['GET'])
+@book_reviews_bp.route('/bookreview', methods=['GET'])
 def get_all_book_reviews():
     connection = db_connection()
     if connection:
@@ -39,7 +37,7 @@ def get_all_book_reviews():
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
 
-@app.route('/bookreview', methods=['POST'])
+@book_reviews_bp.route('/bookreview', methods=['POST'])
 def create_book_review():
     data = request.get_json()
     review_id = data.get('review_id')
@@ -64,8 +62,3 @@ def create_book_review():
         return jsonify({'message': 'Book review created successfully'})
     except mysql.connector.Error as e:
         return jsonify({'message': f'Database error while creating the book review: {e}'}), 500  # 500 Internal Server Error
-
-
-
-if __name__ == '__main__':
-    app.run()
