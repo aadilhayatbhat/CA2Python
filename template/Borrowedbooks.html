@@ -33,19 +33,15 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="students.html">Students</a>
-                    
                     </li>
-                    
                     <li class="nav-item">
                         <a class="nav-link" href="#">Borrowed Books</a>
                     </li>
-                  
-                    
                 </ul>
-                
             </div>
         </div>
     </nav>
+
     <div class="container mt-4">
         <h1>Borrowed Books</h1>
         <table class="table table-striped" id="borrowedBookTable">
@@ -56,6 +52,8 @@
                     <th>Book ID</th>
                     <th>Borrow Date</th>
                     <th>Due Date</th>
+                    <th>Additional Data 1</th>
+                    <th>Additional Data 2</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -63,35 +61,34 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $.ajax({
-            url: 'http://127.0.0.1:5000/borrowed_books',
-            type: 'GET',
-            success: function(data) {
-                var borrowedBooks = data;
-                var borrowedBookTable = $('#borrowedBookTable').find('tbody');
-                borrowedBookTable.empty();
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/borrowed_books',
+                type: 'GET',
+                success: function (data) {
+                    var borrowedBooks = data;
+                    var borrowedBookTable = $('#borrowedBookTable').find('tbody');
+                    borrowedBookTable.empty();
 
-                borrowedBooks.forEach(function(borrowedBook) {
-                    var row = $('<tr>');
-                    row.append($('<td>').text(borrowedBook.transaction_id));
-                    row.append($('<td>').text(borrowedBook.student_id));
-                    row.append($('<td>').text(borrowedBook.book_id));
-                    row.append($('<td>').text(borrowedBook.borrow_date));
-                    row.append($('<td>').text(borrowedBook.due_date));
-                    borrowedBookTable.append(row);
-                });
-            },
-            error: function() {
-                alert('Failed to retrieve borrowed books.');
-            }
+                    borrowedBooks.forEach(function (borrowedBook) {
+                        var row = $('<tr>');
+                        row.append($('<td>').text(borrowedBook.transaction_id));
+                        row.append($('<td>').text(borrowedBook.student_id));
+                        row.append($('<td>').text(borrowedBook.book_id));
+                        row.append($('<td>').text(borrowedBook.borrow_date));
+                        row.append($('<td>').text(borrowedBook.due_date));
+                        row.append($('<td>').text(borrowedBook.additional_data1));
+                        row.append($('<td>').text(borrowedBook.additional_data2));
+                        borrowedBookTable.append(row);
+                    });
+                },
+                error: function () {
+                    alert('Failed to retrieve borrowed books.');
+                }
+            });
         });
-    });
-</script>
-
-    
-</body>
+    </script>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
