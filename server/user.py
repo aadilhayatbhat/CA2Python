@@ -1,10 +1,8 @@
-from flask import Flask, jsonify, request
+from flask import Blueprint, jsonify, request
 import mysql.connector
-from flask_cors import CORS
 
-app = Flask(__name__)
-CORS(app)
-CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:5000/users"}})
+users_bp = Blueprint('users', __name__)
+
 def db_connection():
     try:
         connection = mysql.connector.connect(
@@ -18,7 +16,7 @@ def db_connection():
         print(f"Error connecting to the database: {e}")
         return None
 
-@app.route('/users', methods=['GET'])
+@users_bp.route('/users', methods=['GET'])
 def get_all_users():
     connection = db_connection()
     if connection:
@@ -42,7 +40,7 @@ def get_all_users():
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
     
-@app.route('/users/<int:record_id>', methods=['GET'])
+@users_bp.route('/users/<int:record_id>', methods=['GET'])
 def search_record_by_id(record_id):
     connection = db_connection()
     if connection:
@@ -64,7 +62,7 @@ def search_record_by_id(record_id):
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
     
-@app.route('/users', methods=['POST'])
+@users_bp.route('/users', methods=['POST'])
 def add_user():
     connection = db_connection()
     if not connection:
@@ -84,10 +82,10 @@ def add_user():
     cursor.close()
     connection.close()
 
-    return jsonify({'message': 'user added successfully'}), 201  # 201 Created
+    return jsonify({'message': 'User added successfully'}), 201  # 201 Created
 
 
-@app.route('/users/<int:record_id>', methods=['DELETE'])
+@users_bp.route('/users/<int:record_id>', methods=['DELETE'])
 def delete_user(record_id):
     connection = db_connection()
     if connection:
@@ -108,12 +106,9 @@ def delete_user(record_id):
             connection.commit()
             connection.close()
 
-            return jsonify({'message': 'user deleted successfully'}), 200  # 200 OK - Successful request
+            return jsonify({'message': 'User deleted successfully'}), 200  # 200 OK - Successful request
         except mysql.connector.Error as e:
             print(f"Error deleting data from the database: {e}")
             return jsonify({'message': 'An error occurred while deleting data'}), 500  # 500 Internal Server Error
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
-
-if __name__ == '__main__':
-    app.run()
