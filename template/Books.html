@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BooksForAll</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categories.html">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="books.html">Books</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="bookreview.html">Book Reviews</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="students.html">Students</a>
+
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="borrowedbooks.html">Borrowed Books</a>
+                    </li>
+
+
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <h1>Books</h1>
+        <table class="table table-striped" id="bookTable">
+            <thead>
+                <tr>
+                    <th>Book ID</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>category_id</th>
+                    <th>Available_books</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div class="container">
+        <div class="mb-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#addStudentModal">Add</button>
+        </div>
+        <div class="mb-3">
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                data-bs-target="#updateStudentModal">Update</button>
+        </div>
+        <div class="mb-3">
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                data-bs-target="#deleteStudentModal">Delete</button>
+        </div>
+    </div>
+
+    <!-- Add books Modal -->
+    <div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addBookModalLabel">Add Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addBookForm">
+                        <div class="mb-3">
+                            <label for="book_title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="book_title" name="book_title" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="book_author" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="book_author" name="book_author" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="category_id" class="form-label">Category ID</label>
+                            <input type="number" class="form-control" id="category_id" name="category_id" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="available_books" class="form-label">Available Books</label>
+                            <input type="number" class="form-control" id="available_books" name="available_books"
+                                required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Update Book Modal -->
+    <div class="modal fade" id="updateBookModal" tabindex="-1" aria-labelledby="updateBookModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateBookModalLabel">Update Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateBookForm">
+                        <div class="mb-3">
+                            <label for="update_book_id" class="form-label">Book ID</label>
+                            <input type="text" class="form-control" id="update_book_id" name="update_book_id" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_book_title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="update_book_title" name="update_book_title"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_book_author" class="form-label">Author</label>
+                            <input type="text" class="form-control" id="update_book_author" name="update_book_author"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_category_id" class="form-label">Category ID</label>
+                            <input type="number" class="form-control" id="update_category_id" name="update_category_id"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_available_books" class="form-label">Available Books</label>
+                            <input type="number" class="form-control" id="update_available_books"
+                                name="update_available_books" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Book Modal -->
+    <div class="modal fade" id="deleteBookModal" tabindex="-1" aria-labelledby="deleteBookModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteBookModalLabel">Delete Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="deleteBookForm">
+                        <div class="mb-3">
+                            <label for="delete_book_id" class="form-label">Book ID</label>
+                            <input type="text" class="form-control" id="delete_book_id" name="delete_book_id" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Function to fetch books
+            function fetchBooks() {
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/books',
+                    type: 'GET',
+                    success: function (data) {
+                        var books = data;
+                        var bookTable = $('#bookTable').find('tbody');
+                        bookTable.empty();
+
+                        books.forEach(function (book) {
+                            var row = $('<tr>');
+                            row.append($('<td>').text(book.book_id));
+                            row.append($('<td>').text(book.title));
+                            row.append($('<td>').text(book.author));
+                            row.append($('<td>').text(book.category_id));
+                            row.append($('<td>').text(book.available_books));
+                            bookTable.append(row);
+                        });
+                    },
+                    error: function () {
+                        alert('Failed to retrieve books.');
+                    }
+                });
+            }
+
+            // Fetch books on page load
+            fetchBooks();
+
+            // Add Book Form Submission
+            $('#addBookForm').submit(function (event) {
+                event.preventDefault();
+                var book_title = $('#book_title').val();
+                var book_author = $('#book_author').val();
+                var category_id = $('#category_id').val();
+                var available_books = $('#available_books').val();
+
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/books',
+                    type: 'POST',
+                    data: {
+                        title: book_title,
+                        author: book_author,
+                        category_id: category_id,
+                        available_books: available_books
+                    },
+                    success: function () {
+                        // Book added successfully
+                        fetchBooks();
+                        $('#addBookModal').modal('hide');
+                    },
+                    error: function () {
+                        alert('Failed to add book.');
+                    }
+                });
+            });
+
+
+
+        });
+    </script>
+
+
+    <script src="/template/css/fetch.js"></script>
+
+
+
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
+        integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
