@@ -178,9 +178,10 @@
                 $.ajax({
                     url: 'http://127.0.0.1:5000/categories',
                     type: 'POST',
-                    data: {
+                    contentType: 'application/json',
+                    data:JSON.stringify( {
                         category_name : category_name
-                    },
+                    }),
                     success: function () {
                         // Category added successfully
                         fetchCategories();
@@ -201,9 +202,10 @@
                 $.ajax({
                     url: 'http://127.0.0.1:5000/categories/' + category_id,
                     type: 'PUT',
-                    data: {
+                    contentType: 'application/json',
+                    data: JSON.stringify({
                         category_name: category_name
-                    },
+                    }),
                     success: function () {
                         // Category updated successfully
                         fetchCategories();

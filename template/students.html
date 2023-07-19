@@ -189,10 +189,11 @@
                 $.ajax({
                     url: 'http://127.0.0.1:5000/students',
                     type: 'POST',
-                    data: {
+                    contentType: 'application/json',
+                    data:JSON.stringify( {
                         student_name: student_name,
                         student_email: student_email
-                    },
+                    }),
                     success: function () {
                         // Student added successfully
                         fetchStudents();
@@ -214,10 +215,11 @@
                 $.ajax({
                     url: 'http://127.0.0.1:5000/students/' + student_id,
                     type: 'PUT',
-                    data: {
+                    contentType: 'application/json',
+                    data:JSON.stringify( {
                         student_name: student_name,
                         student_email: student_email
-                    },
+                    }),
                     success: function () {
                         // Student updated successfully
                         fetchStudents();

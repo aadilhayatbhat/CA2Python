@@ -119,12 +119,13 @@
                 $.ajax({
                     url: 'http://127.0.0.1:5000/books',
                     type: 'POST',
-                    data: {
+                    ontentType: 'application/json',
+                    data:JSON.stringify({
                         title: book_title,
                         author: book_author,
                         category_id: category_id,
                         available_books: available_books
-                    },
+                    }),
                     success: function () {
                         fetchBooks();
                         $('#addBookModal').modal('hide');
