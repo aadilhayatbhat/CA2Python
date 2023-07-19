@@ -1,10 +1,8 @@
-from flask import Flask, request, jsonify
+from flask import Blueprint, request, jsonify
 import mysql.connector
-from flask_cors import CORS
 
-app = Flask(__name__)
-CORS(app)
-CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:5000/categories"}})
+categories_bp = Blueprint('categories', __name__)
+
 def db_connection():
     connection = mysql.connector.connect(
         host='63.34.171.72',
@@ -14,7 +12,7 @@ def db_connection():
     )
     return connection
 
-@app.route('/categories', methods=['GET'])
+@categories_bp.route('/categories', methods=['GET'])
 def get_all_categories():
     connection = db_connection()
     cursor = connection.cursor()
@@ -31,7 +29,7 @@ def get_all_categories():
 
     return jsonify(record_list)
 
-@app.route('/categories/<int:category_id>', methods=['GET'])
+@categories_bp.route('/categories/<int:category_id>', methods=['GET'])
 def get_category_by_id(category_id):
     connection = db_connection()
     cursor = connection.cursor()
@@ -47,8 +45,7 @@ def get_category_by_id(category_id):
     else:
         return jsonify({'message': 'Category not found'})
 
-#create new category
-@app.route('/categories', methods=['POST'])
+@categories_bp.route('/categories', methods=['POST'])
 def create_category():
     connection = db_connection()
     cursor = connection.cursor()
@@ -62,14 +59,11 @@ def create_category():
 
     return jsonify({'message': 'New category created'})
 
-#delete category
-
-@app.route('/categories/<int:category_id>', methods=['DELETE'])
+@categories_bp.route('/categories/<int:category_id>', methods=['DELETE'])
 def delete_category(category_id):
     connection = db_connection()
     cursor = connection.cursor()
 
-    # Check if the category exists
     cursor.execute("SELECT * FROM categories WHERE category_id = %s", (category_id,))
     category = cursor.fetchone()
 
@@ -78,7 +72,6 @@ def delete_category(category_id):
         connection.close()
         return jsonify({'message': 'Category not found'})
 
-    # Delete the category
     cursor.execute("DELETE FROM categories WHERE category_id = %s", (category_id,))
     connection.commit()
     cursor.close()
@@ -86,13 +79,11 @@ def delete_category(category_id):
 
     return jsonify({'message': 'Category deleted'})
 
-#update the name of the category
-@app.route('/categories/<int:category_id>', methods=['PUT'])
+@categories_bp.route('/categories/<int:category_id>', methods=['PUT'])
 def update_category(category_id):
     connection = db_connection()
     cursor = connection.cursor()
 
-    # Check if the category exists
     cursor.execute("SELECT * FROM categories WHERE category_id = %s", (category_id,))
     category = cursor.fetchone()
 
@@ -101,11 +92,9 @@ def update_category(category_id):
         connection.close()
         return jsonify({'message': 'Category not found'})
 
-    # Get the new category name from the request body
     data = request.get_json()
     new_category_name = data.get('category_name')
 
-    # Update the category name
     cursor.execute("UPDATE categories SET category_name = %s WHERE category_id = %s", (new_category_name, category_id))
     connection.commit()
 
@@ -113,7 +102,3 @@ def update_category(category_id):
     connection.close()
 
     return jsonify({'message': 'Category updated'})
-
-if __name__ == '__main__':
-    app.run()
-
