@@ -119,13 +119,14 @@
                 $.ajax({
                     url: 'http://127.0.0.1:5000/bookreview',
                     type: 'POST',
-                    data: {
+                    contentType: 'application/json',
+                    data: JSON.stringify({
                         review_id: review_id,
                         book_id: book_id,
                         student_id: student_id,
                         review_date: review_date,
                         comments: comments
-                    },
+                    }),
                     success: function () {
                         fetchBookReviews();
                         $('#addReviewModal').modal('hide');
