@@ -58,30 +58,194 @@
         </table>
     </div>
 
+    <div class="container">
+        <div class="mb-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStudentModal">Add</button>
+        </div>
+        <div class="mb-3">
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateStudentModal">Update</button>
+        </div>
+        <div class="mb-3">
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteStudentModal">Delete</button>
+        </div>
+    </div>
+
+    <!-- Add Student Modal -->
+    <div class="modal fade" id="addStudentModal" tabindex="-1" aria-labelledby="addStudentModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addStudentModalLabel">Add Student</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addStudentForm">
+                        <div class="mb-3">
+                            <label for="student_name" class="form-label">Student Name</label>
+                            <input type="text" class="form-control" id="student_name" name="student_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="student_email" class="form-label">Student Email</label>
+                            <input type="email" class="form-control" id="student_email" name="student_email" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Student Modal -->
+    <div class="modal fade" id="updateStudentModal" tabindex="-1" aria-labelledby="updateStudentModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateStudentModalLabel">Update Student</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateStudentForm">
+                        <div class="mb-3">
+                            <label for="update_student_id" class="form-label">Student ID</label>
+                            <input type="text" class="form-control" id="update_student_id" name="update_student_id" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_student_name" class="form-label">Student Name</label>
+                            <input type="text" class="form-control" id="update_student_name" name="update_student_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_student_email" class="form-label">Student Email</label>
+                            <input type="email" class="form-control" id="update_student_email" name="update_student_email" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Student Modal -->
+    <div class="modal fade" id="deleteStudentModal" tabindex="-1" aria-labelledby="deleteStudentModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteStudentModalLabel">Delete Student</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="deleteStudentForm">
+                        <div class="mb-3">
+                            <label for="delete_student_id" class="form-label">Student ID</label>
+                            <input type="text" class="form-control" id="delete_student_id" name="delete_student_id" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            $.ajax({
-                url: 'http://127.0.0.1:5000/students',
-                type: 'GET',
-                success: function (data) {
-                    var students = data;
-                    var studentTable = $('#studentTable').find('tbody');
-                    studentTable.empty();
+            // Function to fetch students
+            function fetchStudents() {
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/students',
+                    type: 'GET',
+                    success: function (data) {
+                        var students = data;
+                        var studentTable = $('#studentTable').find('tbody');
+                        studentTable.empty();
 
-                    students.forEach(function (student) {
-                        var row = $('<tr>');
-                        row.append($('<td>').text(student.student_id));
-                        row.append($('<td>').text(student.student_name));
-                        row.append($('<td>').text(student.student_email));
-                        row.append($('<td>').text(student.additional_data1));
-                        row.append($('<td>').text(student.additional_data2));
-                        studentTable.append(row);
-                    });
-                },
-                error: function () {
-                    alert('Failed to retrieve students.');
-                }
+                        students.forEach(function (student) {
+                            var row = $('<tr>');
+                            row.append($('<td>').text(student.student_id));
+                            row.append($('<td>').text(student.student_name));
+                            row.append($('<td>').text(student.student_email));
+                            row.append($('<td>').text(student.additional_data1));
+                            row.append($('<td>').text(student.additional_data2));
+                            studentTable.append(row);
+                        });
+                    },
+                    error: function () {
+                        alert('Failed to retrieve students.');
+                    }
+                });
+            }
+
+            // Fetch students on page load
+            fetchStudents();
+
+            // Add Student Form Submission
+            $('#addStudentForm').submit(function (event) {
+                event.preventDefault();
+                var student_name = $('#student_name').val();
+                var student_email = $('#student_email').val();
+
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/students',
+                    type: 'POST',
+                    data: {
+                        student_name: student_name,
+                        student_email: student_email
+                    },
+                    success: function () {
+                        // Student added successfully
+                        fetchStudents();
+                        $('#addStudentModal').modal('hide');
+                    },
+                    error: function () {
+                        alert('Failed to add student.');
+                    }
+                });
+            });
+
+            // Update Student Form Submission
+            $('#updateStudentForm').submit(function (event) {
+                event.preventDefault();
+                var student_id = $('#update_student_id').val();
+                var student_name = $('#update_student_name').val();
+                var student_email = $('#update_student_email').val();
+
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/students/' + student_id,
+                    type: 'PUT',
+                    data: {
+                        student_name: student_name,
+                        student_email: student_email
+                    },
+                    success: function () {
+                        // Student updated successfully
+                        fetchStudents();
+                        $('#updateStudentModal').modal('hide');
+                    },
+                    error: function () {
+                        alert('Failed to update student.');
+                    }
+                });
+            });
+
+            // Delete Student Form Submission
+            $('#deleteStudentForm').submit(function (event) {
+                event.preventDefault();
+                var student_id = $('#delete_student_id').val();
+
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/students/' + student_id,
+                    type: 'DELETE',
+                    success: function () {
+                        // Student deleted successfully
+                        fetchStudents();
+                        $('#deleteStudentModal').modal('hide');
+                    },
+                    error: function () {
+                        alert('Failed to delete student.');
+                    }
+                });
             });
         });
     </script>
