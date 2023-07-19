@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BooksForAll</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="categories.html">Categories</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="books.html">Books</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Book Reviews</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="students.html">Students</a>
+                    
+                    </li>
+                    
+                    <li class="nav-item">
+                        <a class="nav-link" href="borrowedbooks.html">Borrowed Books</a>
+                    </li>
+                  
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <h1>Book Reviews</h1>
+        <table class="table table-striped" id="BookReviewsTable">
+            <thead>
+                <tr>
+                    <th>review_id</th>
+                    <th>book_id</th>
+                    <th>student_id</th>
+                    <th>review_date</th>
+                    <th>comments</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <div class="container">
+        <div class="mb-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#addBookModal">Add</button>
+        </div>
+        <div class="mb-3">
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal"
+                data-bs-target="#updateBookModal">Update</button>
+        </div>
+        <div class="mb-3">
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal"
+                data-bs-target="#deleteBookModal">Delete</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            function fetchBookReviews() {
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/bookreview',
+                    type: 'GET',
+                    success: function (data) {
+                        var bookReviews = data;
+                        var BookReviewsTable = $('#BookReviewsTable').find('tbody');
+                        BookReviewsTable.empty();
+
+                        bookReviews.forEach(function (review) {
+                            var row = $('<tr>');
+                            row.append($('<td>').text(review.review_id));
+                            row.append($('<td>').text(review.book_id));
+                            row.append($('<td>').text(review.student_id));
+                            row.append($('<td>').text(review.review_date));
+                            row.append($('<td>').text(review.comments));
+                            BookReviewsTable.append(row);
+                        });
+                    },
+                    error: function () {
+                        alert('Failed to retrieve book reviews.');
+                    }
+                });
+            }
+
+            fetchBookReviews();
+
+            $('#addReviewForm').submit(function (event) {
+                event.preventDefault();
+                var book_id = $('#review_id').val();
+                var book_id = $('#book_id').val();
+                var student_id = $('#student_id').val();
+                var review_date = $('#review_date').val();
+                var comments = $('#comments').val();
+
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/bookreview',
+                    type: 'POST',
+                    data: {
+                        review_id: review_id,
+                        book_id: book_id,
+                        student_id: student_id,
+                        review_date: review_date,
+                        comments: comments
+                    },
+                    success: function () {
+                        fetchBookReviews();
+                        $('#addReviewModal').modal('hide');
+                    },
+                    error: function () {
+                        alert('Failed to add review.');
+                    }
+                });
+            });
+
+        });
+    </script>
+
+    <!-- Add Review Modal -->
+    <div class="modal fade" id="addReviewModal" tabindex="-1" aria-labelledby="addReviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addReviewModalLabel">Add Review</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addReviewForm">
+                        <div class="mb-3">
+                            <label for="book_id" class="form-label">Book ID</label>
+                            <input type="text" class="form-control" id="book_id" name="book_id" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="student_id" class="form-label">Student ID</label>
+                            <input type="text" class="form-control" id="student_id" name="student_id" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="review_date" class="form-label">Review Date</label>
+                            <input type="date" class="form-control" id="review_date" name="review_date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="comments" class="form-label">Comments</label>
+                            <textarea class="form-control" id="comments" name="comments" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
