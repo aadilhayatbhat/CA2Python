@@ -33,18 +33,15 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="students.html">Students</a>
-                    
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="borrowedbooks.html">Borrowed Books</a>
                     </li>
-                    
-                    
                 </ul>
-                
             </div>
         </div>
     </nav>
+
     <div class="container mt-4">
         <h1>Students</h1>
         <table class="table table-striped" id="studentTable">
@@ -53,6 +50,8 @@
                     <th>Student ID</th>
                     <th>Student Name</th>
                     <th>Student Email</th>
+                    <th>Additional Data 1</th>
+                    <th>Additional Data 2</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -60,31 +59,32 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- <script>
-    $(document).ready(function() {
-        $.ajax({
-            url: 'http://127.0.0.1:5000/students',
-            type: 'GET',
-            success: function(data) {
-                var students = data;
-                var studentTable = $('#studentTable').find('tbody');
-                studentTable.empty();
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: 'http://127.0.0.1:5000/students',
+                type: 'GET',
+                success: function (data) {
+                    var students = data;
+                    var studentTable = $('#studentTable').find('tbody');
+                    studentTable.empty();
 
-                students.forEach(function(student) {
-                    var row = $('<tr>');
-                    row.append($('<td>').text(student.student_id));
-                    row.append($('<td>').text(student.student_name));
-                    row.append($('<td>').text(student.student_email));
-                    studentTable.append(row);
-                });
-            },
-            error: function() {
-                alert('Failed to retrieve students.');
-            }
+                    students.forEach(function (student) {
+                        var row = $('<tr>');
+                        row.append($('<td>').text(student.student_id));
+                        row.append($('<td>').text(student.student_name));
+                        row.append($('<td>').text(student.student_email));
+                        row.append($('<td>').text(student.additional_data1));
+                        row.append($('<td>').text(student.additional_data2));
+                        studentTable.append(row);
+                    });
+                },
+                error: function () {
+                    alert('Failed to retrieve students.');
+                }
+            });
         });
-    });
-</script> -->
-<script src="/template/css/fetch.js"></script>
+    </script>
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
