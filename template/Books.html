@@ -65,17 +65,79 @@
     <div class="container">
         <div class="mb-3">
             <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                data-bs-target="#addStudentModal">Add</button>
+                data-bs-target="#addBookModal">Add</button>
         </div>
         <div class="mb-3">
             <button type="button" class="btn btn-warning" data-bs-toggle="modal"
-                data-bs-target="#updateStudentModal">Update</button>
+                data-bs-target="#updateBookModal">Update</button>
         </div>
         <div class="mb-3">
             <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                data-bs-target="#deleteStudentModal">Delete</button>
+                data-bs-target="#deleteBookModal">Delete</button>
         </div>
     </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            function fetchBooks() {
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/books',
+                    type: 'GET',
+                    success: function (data) {
+                        var books = data;
+                        var bookTable = $('#bookTable').find('tbody');
+                        bookTable.empty();
+
+                        books.forEach(function (book) {
+                            var row = $('<tr>');
+                            row.append($('<td>').text(book.book_id));
+                            row.append($('<td>').text(book.title));
+                            row.append($('<td>').text(book.author));
+                            row.append($('<td>').text(book.category_id));
+                            row.append($('<td>').text(book.available_books));
+                            bookTable.append(row);
+                        });
+                    },
+                    error: function () {
+                        alert('Failed to retrieve books.');
+                    }
+                });
+            }
+
+            fetchBooks();
+
+            $('#addBookForm').submit(function (event) {
+                event.preventDefault();
+                var book_title = $('#book_title').val();
+                var book_author = $('#book_author').val();
+                var category_id = $('#category_id').val();
+                var available_books = $('#available_books').val();
+
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/books',
+                    type: 'POST',
+                    ontentType: 'application/json',
+                    data:JSON.stringify({
+                        title: book_title,
+                        author: book_author,
+                        category_id: category_id,
+                        available_books: available_books
+                    }),
+                    success: function () {
+                        fetchBooks();
+                        $('#addBookModal').modal('hide');
+                    },
+                    error: function () {
+                        alert('Failed to add book.');
+                    }
+                });
+            });
+
+        });
+    </script>
 
     <!-- Add books Modal -->
     <div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
@@ -110,6 +172,7 @@
             </div>
         </div>
     </div>
+
     <!-- Update Book Modal -->
     <div class="modal fade" id="updateBookModal" tabindex="-1" aria-labelledby="updateBookModalLabel"
         aria-hidden="true">
@@ -174,88 +237,26 @@
         </div>
     </div>
 
+</body>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            // Function to fetch books
-            function fetchBooks() {
-                $.ajax({
-                    url: 'http://127.0.0.1:5000/books',
-                    type: 'GET',
-                    success: function (data) {
-                        var books = data;
-                        var bookTable = $('#bookTable').find('tbody');
-                        bookTable.empty();
-
-                        books.forEach(function (book) {
-                            var row = $('<tr>');
-                            row.append($('<td>').text(book.book_id));
-                            row.append($('<td>').text(book.title));
-                            row.append($('<td>').text(book.author));
-                            row.append($('<td>').text(book.category_id));
-                            row.append($('<td>').text(book.available_books));
-                            bookTable.append(row);
-                        });
-                    },
-                    error: function () {
-                        alert('Failed to retrieve books.');
-                    }
-                });
-            }
-
-            // Fetch books on page load
-            fetchBooks();
-
-            // Add Book Form Submission
-            $('#addBookForm').submit(function (event) {
-                event.preventDefault();
-                var book_title = $('#book_title').val();
-                var book_author = $('#book_author').val();
-                var category_id = $('#category_id').val();
-                var available_books = $('#available_books').val();
-
-                $.ajax({
-                    url: 'http://127.0.0.1:5000/books',
-                    type: 'POST',
-                    data: {
-                        title: book_title,
-                        author: book_author,
-                        category_id: category_id,
-                        available_books: available_books
-                    },
-                    success: function () {
-                        // Book added successfully
-                        fetchBooks();
-                        $('#addBookModal').modal('hide');
-                    },
-                    error: function () {
-                        alert('Failed to add book.');
-                    }
-                });
-            });
+</html>
 
 
-
-        });
-    </script>
-
-
-    <script src="/template/css/fetch.js"></script>
+<script src="/template/css/fetch.js"></script>
 
 
 
 
-    <!-- Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
-        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
-        integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-        crossorigin="anonymous"></script>
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+    integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
+    integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
+    crossorigin="anonymous"></script>
 </body>
 
 </html>
