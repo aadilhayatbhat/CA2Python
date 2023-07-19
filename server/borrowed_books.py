@@ -1,11 +1,7 @@
-from flask import Flask, jsonify, request
+from flask import Blueprint, jsonify, request
 import mysql.connector
-from flask_cors import CORS
 
-
-
-app = Flask(__name__)
-CORS(app)
+borrowed_books_bp = Blueprint('borrowed_books', __name__)
 
 def db_connection():
     try:
@@ -20,7 +16,7 @@ def db_connection():
         print(f"Error connecting to the database: {e}")
         return None
 
-@app.route('/borrowed_books', methods=['GET'])
+@borrowed_books_bp.route('/borrowed_books', methods=['GET'])
 def get_all_borrowed_books():
     connection = db_connection()
     if connection:
@@ -44,8 +40,7 @@ def get_all_borrowed_books():
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
 
-
-@app.route('/borrowed_books/<int:record_id>', methods=['GET'])
+@borrowed_books_bp.route('/borrowed_books/<int:record_id>', methods=['GET'])
 def search_record_by_id(record_id):
     connection = db_connection()
     if connection:
@@ -66,9 +61,6 @@ def search_record_by_id(record_id):
             return jsonify({'message': 'An error occurred while fetching data'}), 500  # 500 Internal Server Error
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
-    
-    #create a borrowed books
-
 
 def check_student_id_exist(student_id):
     connection = db_connection()
@@ -102,7 +94,7 @@ def check_book_id_exist(book_id):
     else:
         return False
 
-@app.route('/borrowed_books', methods=['POST'])
+@borrowed_books_bp.route('/borrowed_books', methods=['POST'])
 def create_borrowed_book():
     connection = db_connection()
     if connection:
@@ -133,9 +125,8 @@ def create_borrowed_book():
             return jsonify({'message': 'An error occurred while creating borrowed book'}), 500  # 500 Internal Server Error
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
-    
 
-@app.route('/borrowed_books/<int:record_id>', methods=['PUT'])
+@borrowed_books_bp.route('/borrowed_books/<int:record_id>', methods=['PUT'])
 def update_borrowed_book(record_id):
     connection = db_connection()
     if connection:
@@ -195,7 +186,3 @@ def update_borrowed_book(record_id):
             return jsonify({'message': 'An error occurred while updating borrowed book record'}), 500  # 500 Internal Server Error
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
-
-if __name__ == '__main__':
-    app.run()
-
