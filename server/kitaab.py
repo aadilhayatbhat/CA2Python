@@ -1,9 +1,7 @@
-from flask import Flask, jsonify, request
+from flask import Blueprint, jsonify, request
 import mysql.connector
-from flask_cors import CORS
 
-app = Flask(__name__)
-CORS(app)
+books_bp = Blueprint('books', __name__)
 
 def db_connection():
     try:
@@ -17,10 +15,9 @@ def db_connection():
     except mysql.connector.Error as e:
         print(f"Error connecting to the database: {e}")
         return None
-    
 
 
-@app.route('/books', methods=['GET'])
+@books_bp.route('/books', methods=['GET'])
 def get_all_books():
     connection = db_connection()
     if connection:
@@ -45,7 +42,7 @@ def get_all_books():
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
     
 
-@app.route('/books/<int:record_id>', methods=['GET'])
+@books_bp.route('/books/<int:record_id>', methods=['GET'])
 def search_record_by_id(record_id):
     connection = db_connection()
     if connection:
@@ -85,8 +82,7 @@ def check_category_id_exist(category_id):
         return False
 
 
-
-@app.route('/books', methods=['POST'])
+@books_bp.route('/books', methods=['POST'])
 def add_book():
     connection = db_connection()
     if not connection:
@@ -98,9 +94,9 @@ def add_book():
     category_id = data.get('category_id')
     available_books = data.get('available_books')
 
-# Check if category_id exist in the database
+    # Check if category_id exist in the database
     if not check_category_id_exist(category_id):
-            return jsonify({'message': 'Invalid category_id'}), 400  # 400 Bad Request
+        return jsonify({'message': 'Invalid category_id'}), 400  # 400 Bad Request
 
     if not title or not author or not category_id or available_books is None:
         return jsonify({'message': 'Invalid data. All fields (title, author, category_id, available_books) are required.'}), 400  # 400 Bad Request
@@ -115,9 +111,7 @@ def add_book():
     return jsonify({'message': 'Book added successfully'}), 201  # 201 Created
 
 
-#delete
-
-@app.route('/books/<int:record_id>', methods=['DELETE'])
+@books_bp.route('/books/<int:record_id>', methods=['DELETE'])
 def delete_book(record_id):
     connection = db_connection()
 
@@ -149,7 +143,7 @@ def delete_book(record_id):
         connection.close()
         
 
-@app.route('/books/<int:record_id>', methods=['PUT'])
+@books_bp.route('/books/<int:record_id>', methods=['PUT'])
 def update_book(record_id):
     connection = db_connection()
     if not connection:
@@ -190,7 +184,3 @@ def update_book(record_id):
         return jsonify({'message': 'Book updated successfully'}), 200
     except mysql.connector.Error as e:
         return jsonify({'message': 'An error occurred while updating the book'}), 500
-
-
-if __name__ == '__main__':
-    app.run()
