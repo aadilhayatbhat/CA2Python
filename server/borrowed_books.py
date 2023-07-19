@@ -186,3 +186,39 @@ def update_borrowed_book(record_id):
             return jsonify({'message': 'An error occurred while updating borrowed book record'}), 500  # 500 Internal Server Error
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
+    
+
+
+
+@borrowed_books_bp.route('/borrowed_books/<int:record_id>', methods=['DELETE'])
+def delete_borrowed_book(record_id):
+    connection = db_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            
+            # Check if the record exists in the database
+            cursor.execute("SELECT * FROM borrowed_books WHERE transaction_id = %s", (record_id,))
+            record = cursor.fetchone()
+
+            if not record:
+                cursor.close()
+                connection.close()
+                return jsonify({'message': 'Record not found'}), 404  # 404 Not Found - Resource not found
+
+            # Delete the borrowed book record
+            delete_query = "DELETE FROM borrowed_books WHERE transaction_id = %s"
+            cursor.execute(delete_query, (record_id,))
+            connection.commit()
+
+            cursor.close()
+            connection.close()
+
+            return jsonify({'message': 'Borrowed book record deleted successfully'}), 200  # 200 OK - Successful request
+        except mysql.connector.Error as e:
+            print(f"Error deleting data from the database: {e}")
+            return jsonify({'message': 'An error occurred while deleting borrowed book record'}), 500  # 500 Internal Server Error
+    else:
+        return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
+
+
