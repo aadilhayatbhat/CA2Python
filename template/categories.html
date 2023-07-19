@@ -57,31 +57,181 @@
             <tbody></tbody>
         </table>
     </div>
+    <div class="container">
+        <div class="mb-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add</button>
+        </div>
+        <div class="mb-3">
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateCategoryModal">Update</button>
+        </div>
+        <div class="mb-3">
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteCategoryModal">Delete</button>
+        </div>
+    </div>
 
+    <!-- Add Category Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addCategoryForm">
+                        <div class="mb-3">
+                            <label for="category_name" class="form-label">Category Name</label>
+                            <input type="text" class="form-control" id="category_name" name="category_name" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Category Modal -->
+    <div class="modal fade" id="updateCategoryModal" tabindex="-1" aria-labelledby="updateCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateCategoryModalLabel">Update Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateCategoryForm">
+                        <div class="mb-3">
+                            <label for="update_category_id" class="form-label">Category ID</label>
+                            <input type="text" class="form-control" id="update_category_id" name="update_category_id" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="update_category_name" class="form-label">Category Name</label>
+                            <input type="text" class="form-control" id="update_category_name" name="update_category_name" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Category Modal -->
+    <div class="modal fade" id="deleteCategoryModal" tabindex="-1" aria-labelledby="deleteCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteCategoryModalLabel">Delete Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="deleteCategoryForm">
+                        <div class="mb-3">
+                            <label for="delete_category_id" class="form-label">Category ID</label>
+                            <input type="text" class="form-control" id="delete_category_id" name="delete_category_id" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            $.ajax({
-                url: 'http://127.0.0.1:5000/categories',
-                type: 'GET',
-                success: function (data) {
-                    var categories = data;
-                    var categoryTable = $('#categoryTable').find('tbody');
-                    categoryTable.empty();
+            // Function to fetch categories
+            function fetchCategories() {
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/categories',
+                    type: 'GET',
+                    success: function (data) {
+                        var categories = data;
+                        var categoryTable = $('#categoryTable').find('tbody');
+                        categoryTable.empty();
 
-                    categories.forEach(function (category) {
-                        var row = $('<tr>');
-                        row.append($('<td>').text(category.category_id));
-                        row.append($('<td>').text(category.category_name));
-                        row.append($('<td>').text(category.additional_data1));
-                        row.append($('<td>').text(category.additional_data2));
-                        categoryTable.append(row);
-                    });
-                },
-                error: function () {
-                    alert('Failed to retrieve categories.');
-                }
+                        categories.forEach(function (category) {
+                            var row = $('<tr>');
+                            row.append($('<td>').text(category.category_id));
+                            row.append($('<td>').text(category.category_name));
+                            row.append($('<td>').text(category.additional_data1));
+                            row.append($('<td>').text(category.additional_data2));
+                            categoryTable.append(row);
+                        });
+                    },
+                    error: function () {
+                        alert('Failed to retrieve categories.');
+                    }
+                });
+            }
+
+            // Fetch categories on page load
+            fetchCategories();
+
+            // Add Category Form Submission
+            $('#addCategoryForm').submit(function (event) {
+                event.preventDefault();
+                var category_name = $('#category_name').val();
+
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/categories',
+                    type: 'POST',
+                    data: {
+                        category_name: category_name
+                    },
+                    success: function () {
+                        // Category added successfully
+                        fetchCategories();
+                        $('#addCategoryModal').modal('hide');
+                    },
+                    error: function () {
+                        alert('Failed to add category.');
+                    }
+                });
+            });
+
+            // Update Category Form Submission
+            $('#updateCategoryForm').submit(function (event) {
+                event.preventDefault();
+                var category_id = $('#update_category_id').val();
+                var category_name = $('#update_category_name').val();
+
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/categories/' + category_id,
+                    type: 'PUT',
+                    data: {
+                        category_name: category_name
+                    },
+                    success: function () {
+                        // Category updated successfully
+                        fetchCategories();
+                        $('#updateCategoryModal').modal('hide');
+                    },
+                    error: function () {
+                        alert('Failed to update category.');
+                    }
+                });
+            });
+
+            // Delete Category Form Submission
+            $('#deleteCategoryForm').submit(function (event) {
+                event.preventDefault();
+                var category_id = $('#delete_category_id').val();
+
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/categories/' + category_id,
+                    type: 'DELETE',
+                    success: function () {
+                        // Category deleted successfully
+                        fetchCategories();
+                        $('#deleteCategoryModal').modal('hide');
+                    },
+                    error: function () {
+                        alert('Failed to delete category.');
+                    }
+                });
             });
         });
     </script>
