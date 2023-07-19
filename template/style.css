@@ -5,7 +5,7 @@
 
   #banner {
     background-image: url("https://images.unsplash.com/photo-1519682337058-a94d519337bc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80");
-    height: 100vh;
+    height: 93vh;
     background-size: cover;
     background-position: center;
     padding: 0 5%;
@@ -31,4 +31,22 @@
     color: #000000;
     background-color: #d9d5d5ec;
     border: 0;
+  }
+  
+  /* footer {
+    margin-top: 100px;
+    background-color: transparent;
+    width: 100%;
+  } */
+  
+  .footercontent {
+    width: 100%;
+    padding: 20px 5% 40px;
+  }
+  
+  
+  .footerbottom {
+    background-color: white;
+    padding: 2px;
+    text-align: center;
   }
