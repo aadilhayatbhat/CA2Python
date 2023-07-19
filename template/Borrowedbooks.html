@@ -60,32 +60,220 @@
         </table>
     </div>
 
+    <div class="container">
+        <div class="mb-3">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBorrowedBookModal">Add</button>
+        </div>
+        <div class="mb-3">
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#updateBorrowedBookModal">Update</button>
+        </div>
+        <div class="mb-3">
+            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteBorrowedBookModal">Delete</button>
+        </div>
+    </div>
+
+    <!-- Add Borrowed Book Modal -->
+    <div class="modal fade" id="addBorrowedBookModal" tabindex="-1" aria-labelledby="addBorrowedBookModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addBorrowedBookModalLabel">Add Borrowed Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addBorrowedBookForm">
+                        <div class="mb-3">
+                            <label for="student_id" class="form-label">Student ID</label>
+                            <input type="text" class="form-control" id="student_id" name="student_id" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="book_id" class="form-label">Book ID</label>
+                            <input type="text" class="form-control" id="book_id" name="book_id" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="borrow_date" class="form-label">Borrow Date</label>
+                            <input type="date" class="form-control" id="borrow_date" name="borrow_date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="due_date" class="form-label">Due Date</label>
+                            <input type="date" class="form-control" id="due_date" name="due_date" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Borrowed Book Modal -->
+    <div class="modal fade" id="updateBorrowedBookModal" tabindex="-1" aria-labelledby="updateBorrowedBookModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateBorrowedBookModalLabel">Update Borrowed Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateBorrowedBookForm">
+                        <div class="mb-3">
+                            <label for="transaction_id" class="form-label">Transaction ID</label>
+                            <input type="text" class="form-control" id="transaction_id" name="transaction_id" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="student_id" class="form-label">Student ID</label>
+                            <input type="text" class="form-control" id="update_student_id" name="update_student_id" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="book_id" class="form-label">Book ID</label>
+                            <input type="text" class="form-control" id="update_book_id" name="update_book_id" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="borrow_date" class="form-label">Borrow Date</label>
+                            <input type="date" class="form-control" id="update_borrow_date" name="update_borrow_date" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="due_date" class="form-label">Due Date</label>
+                            <input type="date" class="form-control" id="update_due_date" name="update_due_date" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Borrowed Book Modal -->
+    <div class="modal fade" id="deleteBorrowedBookModal" tabindex="-1" aria-labelledby="deleteBorrowedBookModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteBorrowedBookModalLabel">Delete Borrowed Book</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="deleteBorrowedBookForm">
+                        <div class="mb-3">
+                            <label for="delete_transaction_id" class="form-label">Transaction ID</label>
+                            <input type="text" class="form-control" id="delete_transaction_id" name="delete_transaction_id" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-            $.ajax({
-                url: 'http://127.0.0.1:5000/borrowed_books',
-                type: 'GET',
-                success: function (data) {
-                    var borrowedBooks = data;
-                    var borrowedBookTable = $('#borrowedBookTable').find('tbody');
-                    borrowedBookTable.empty();
+            // Function to fetch borrowed books
+            function fetchBorrowedBooks() {
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/borrowed_books',
+                    type: 'GET',
+                    success: function (data) {
+                        var borrowedBooks = data;
+                        var borrowedBookTable = $('#borrowedBookTable').find('tbody');
+                        borrowedBookTable.empty();
 
-                    borrowedBooks.forEach(function (borrowedBook) {
-                        var row = $('<tr>');
-                        row.append($('<td>').text(borrowedBook.transaction_id));
-                        row.append($('<td>').text(borrowedBook.student_id));
-                        row.append($('<td>').text(borrowedBook.book_id));
-                        row.append($('<td>').text(borrowedBook.borrow_date));
-                        row.append($('<td>').text(borrowedBook.due_date));
-                        row.append($('<td>').text(borrowedBook.additional_data1));
-                        row.append($('<td>').text(borrowedBook.additional_data2));
-                        borrowedBookTable.append(row);
-                    });
-                },
-                error: function () {
-                    alert('Failed to retrieve borrowed books.');
-                }
+                        borrowedBooks.forEach(function (borrowedBook) {
+                            var row = $('<tr>');
+                            row.append($('<td>').text(borrowedBook.transaction_id));
+                            row.append($('<td>').text(borrowedBook.student_id));
+                            row.append($('<td>').text(borrowedBook.book_id));
+                            row.append($('<td>').text(borrowedBook.borrow_date));
+                            row.append($('<td>').text(borrowedBook.due_date));
+                            row.append($('<td>').text(borrowedBook.additional_data1));
+                            row.append($('<td>').text(borrowedBook.additional_data2));
+                            borrowedBookTable.append(row);
+                        });
+                    },
+                    error: function () {
+                        alert('Failed to retrieve borrowed books.');
+                    }
+                });
+            }
+
+            // Fetch borrowed books on page load
+            fetchBorrowedBooks();
+
+            // Add Borrowed Book Form Submission
+            $('#addBorrowedBookForm').submit(function (event) {
+                event.preventDefault();
+                var student_id = $('#student_id').val();
+                var book_id = $('#book_id').val();
+                var borrow_date = $('#borrow_date').val();
+                var due_date = $('#due_date').val();
+
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/borrowed_books',
+                    type: 'POST',
+                    data: {
+                        student_id: student_id,
+                        book_id: book_id,
+                        borrow_date: borrow_date,
+                        due_date: due_date
+                    },
+                    success: function () {
+                        // Borrowed book added successfully
+                        fetchBorrowedBooks();
+                        $('#addBorrowedBookModal').modal('hide');
+                    },
+                    error: function () {
+                        alert('Failed to add borrowed book.');
+                    }
+                });
+            });
+
+            // Update Borrowed Book Form Submission
+            $('#updateBorrowedBookForm').submit(function (event) {
+                event.preventDefault();
+                var transaction_id = $('#transaction_id').val();
+                var student_id = $('#update_student_id').val();
+                var book_id = $('#update_book_id').val();
+                var borrow_date = $('#update_borrow_date').val();
+                var due_date = $('#update_due_date').val();
+
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/borrowed_books/' + transaction_id,
+                    type: 'PUT',
+                    data: {
+                        student_id: student_id,
+                        book_id: book_id,
+                        borrow_date: borrow_date,
+                        due_date: due_date
+                    },
+                    success: function () {
+                        // Borrowed book updated successfully
+                        fetchBorrowedBooks();
+                        $('#updateBorrowedBookModal').modal('hide');
+                    },
+                    error: function () {
+                        alert('Failed to update borrowed book.');
+                    }
+                });
+            });
+
+            // Delete Borrowed Book Form Submission
+            $('#deleteBorrowedBookForm').submit(function (event) {
+                event.preventDefault();
+                var transaction_id = $('#delete_transaction_id').val();
+
+                $.ajax({
+                    url: 'http://127.0.0.1:5000/borrowed_books/' + transaction_id,
+                    type: 'DELETE',
+                    success: function () {
+                        // Borrowed book deleted successfully
+                        fetchBorrowedBooks();
+                        $('#deleteBorrowedBookModal').modal('hide');
+                    },
+                    error: function () {
+                        alert('Failed to delete borrowed book.');
+                    }
+                });
             });
         });
     </script>
