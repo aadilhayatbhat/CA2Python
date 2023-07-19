@@ -1,10 +1,8 @@
-from flask import Flask, jsonify, request
+from flask import Blueprint, jsonify, request
 import mysql.connector
-from flask_cors import CORS
 
-app = Flask(__name__)
-CORS(app)
-CORS(app, resources={r"/*": {"origins": "http://127.0.0.1:5000/students"}})
+students_bp = Blueprint('students', __name__)
+
 def db_connection():
     try:
         connection = mysql.connector.connect(
@@ -18,7 +16,7 @@ def db_connection():
         print(f"Error connecting to the database: {e}")
         return None
 
-@app.route('/students', methods=['GET'])
+@students_bp.route('/students', methods=['GET'])
 def get_all_students():
     connection = db_connection()
     if connection:
@@ -42,7 +40,7 @@ def get_all_students():
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
 
-@app.route('/students/<int:record_id>', methods=['GET'])
+@students_bp.route('/students/<int:record_id>', methods=['GET'])
 def search_record_by_id(record_id):
     connection = db_connection()
     if connection:
@@ -64,7 +62,7 @@ def search_record_by_id(record_id):
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
 
-@app.route('/students/<int:record_id>', methods=['DELETE'])
+@students_bp.route('/students/<int:record_id>', methods=['DELETE'])
 def delete_student(record_id):
     connection = db_connection()
     if connection:
@@ -92,7 +90,7 @@ def delete_student(record_id):
     else:
         return jsonify({'message': 'Database connection error'}), 500  # 500 Internal Server Error
 
-@app.route('/students', methods=['POST'])
+@students_bp.route('/students', methods=['POST'])
 def add_student():
     connection = db_connection()
     if not connection:
@@ -114,9 +112,7 @@ def add_student():
 
     return jsonify({'message': 'Student added successfully'}), 201  # 201 Created
 
-#update student 
-
-@app.route('/students/<int:record_id>', methods=['PUT'])
+@students_bp.route('/students/<int:record_id>', methods=['PUT'])
 def update_student(record_id):
     connection = db_connection()
     if not connection:
@@ -149,8 +145,3 @@ def update_student(record_id):
     connection.close()
 
     return jsonify({'message': 'Record updated successfully'}), 200  # 200 OK - Successful request
-
-
-
-if __name__ == '__main__':
-    app.run()
