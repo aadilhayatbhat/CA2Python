@@ -6,7 +6,7 @@ employees_bp = Blueprint('employees', __name__)
 def db_connection():
     try:
         connection = mysql.connector.connect(
-            host='63.34.171.72',
+            host='34.245.104.62',
             user='library',
             password='password',
             database='library'
