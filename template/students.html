@@ -156,7 +156,7 @@
             // Function to fetch students
             function fetchStudents() {
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/students',
+                    url: 'http://40.85.131.117:5000/students',
                     type: 'GET',
                     success: function (data) {
                         var students = data;
@@ -191,7 +191,7 @@
                 var student_email = $('#student_email').val();
 
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/students',
+                    url: 'http://40.85.131.117:5000/students',
                     type: 'POST',
                     contentType: 'application/json',
                     data:JSON.stringify( {
@@ -217,7 +217,7 @@
                 var student_email = $('#update_student_email').val();
 
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/students/' + student_id,
+                    url: 'http://40.85.131.117:5000/students/' + student_id,
                     type: 'PUT',
                     contentType: 'application/json',
                     data:JSON.stringify( {
@@ -241,7 +241,7 @@
                 var student_id = $('#delete_student_id').val();
 
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/students/' + student_id,
+                    url: 'http://40.85.131.117:5000/students/' + student_id,
                     type: 'DELETE',
                     success: function () {
                         // Student deleted successfully
