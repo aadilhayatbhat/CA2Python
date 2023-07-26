@@ -83,7 +83,7 @@
 
             function fetchBookReviews() {
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/bookreview',
+                    url: 'http://40.85.131.117:5000/bookreview',
                     type: 'GET',
                     success: function (data) {
                         var bookReviews = data;
@@ -117,7 +117,7 @@
                 var comments = $('#comments').val();
 
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/bookreview',
+                    url: 'http://40.85.131.117:5000/bookreview',
                     type: 'POST',
                     contentType: 'application/json',
                     data: JSON.stringify({

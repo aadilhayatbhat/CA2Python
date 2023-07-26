@@ -175,7 +175,7 @@
             // Function to fetch borrowed books
             function fetchBorrowedBooks() {
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/borrowed_books',
+                    url: 'http://40.85.131.117:5000/borrowed_books',
                     type: 'GET',
                     success: function (data) {
                         var borrowedBooks = data;
@@ -212,7 +212,7 @@
                 var due_date = $('#due_date').val();
 
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/borrowed_books',
+                    url: 'http://40.85.131.117:5000/borrowed_books',
                     type: 'POST',
                     contentType: 'application/json',
                     data:JSON.stringify( {
@@ -242,7 +242,7 @@
                 var due_date = $('#update_due_date').val();
 
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/borrowed_books/' + transaction_id,
+                    url: 'http://40.85.131.117:5000/borrowed_books/' + transaction_id,
                     type: 'PUT',
                     contentType: 'application/json',
                     data:JSON.stringify({
@@ -268,7 +268,7 @@
                 var transaction_id = $('#delete_transaction_id').val();
 
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/borrowed_books/' + transaction_id,
+                    url: 'http://40.85.131.117:5000/borrowed_books/' + transaction_id,
                     type: 'DELETE',
                     success: function () {
                         // Borrowed book deleted successfully
