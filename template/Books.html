@@ -34,16 +34,11 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="students.html">Students</a>
-
                     </li>
-
                     <li class="nav-item">
                         <a class="nav-link" href="Borrowedbooks.html">Borrowed Books</a>
                     </li>
-
-
                 </ul>
-
             </div>
         </div>
     </nav>
@@ -78,13 +73,10 @@
         </div>
     </div>
 
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
-
     <script>
         $(document).ready(function () {
-
             function fetchBooks() {
                 $.ajax({
                     url: 'http://40.85.131.117:5000/books',
@@ -117,15 +109,15 @@
 
             $('#addBookForm').submit(function (event) {
                 event.preventDefault();
-                var title = $('#title').val();
-                var author = $('#author').val();
+                var title = $('#book_title').val();
+                var author = $('#book_author').val();
                 var category_id = $('#category_id').val();
                 var available_books = $('#available_books').val();
 
                 $.ajax({
                     url: 'http://40.85.131.117:5000/books',
                     type: 'POST',
-                    ontentType: 'application/json',
+                    contentType: 'application/json',
                     data: JSON.stringify({
                         title: title,
                         author: author,
@@ -141,6 +133,7 @@
                     }
                 });
             });
+
             $('#deleteBookForm').submit(function (event) {
                 event.preventDefault();
                 var book_id = $('#delete_book_id').val();
@@ -156,37 +149,36 @@
                         alert('Failed to delete book.');
                     }
                 });
-                $('#updateBookForm').submit(function (event) {
-                    event.preventDefault();
-                    var book_id = $('#update_book_id').val();
-                    var title = $('#update_title').val();
-                    var author = $('#update_author').val();
-                    var category_id = $('#update_category_id').val();
-                    var available_books = $('#update_available_books').val();
+            });
 
-                    $.ajax({
-                        url: 'http://40.85.131.117:5000/books/' + book_id,
-                        type: 'PUT',
-                        contentType: 'application/json',
-                        data: JSON.stringify({
-                            author: author,
-                            available_books: available_books,
-                            category_id: category_id,
-                            title: title
-                        }),
-                        success: function () {
-                            fetchBooks();
-                            $('#updateBookModal').modal('hide');
-                        },
-                        error: function () {
-                            alert('Failed to update book.');
-                        }
-                    });
+            $('#updateBookForm').submit(function (event) {
+                event.preventDefault();
+                var book_id = $('#update_book_id').val();
+                var title = $('#update_book_title').val();
+                var author = $('#update_book_author').val();
+                var category_id = $('#update_category_id').val();
+                var available_books = $('#update_available_books').val();
 
-
+                $.ajax({
+                    url: 'http://40.85.131.117:5000/books/' + book_id,
+                    type: 'PUT',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        title: title,
+                        author: author,
+                        category_id: category_id,
+                        available_books: available_books
+                    }),
+                    success: function () {
+                        fetchBooks();
+                        $('#updateBookModal').modal('hide');
+                    },
+                    error: function () {
+                        alert('Failed to update book.');
+                    }
                 });
             });
-        });        
+        });
     </script>
 
     <!-- Add books Modal -->
@@ -236,7 +228,8 @@
                     <form id="updateBookForm">
                         <div class="mb-3">
                             <label for="update_book_id" class="form-label">Book ID</label>
-                            <input type="text" class="form-control" id="update_book_id" name="update_book_id" required>
+                            <input type="text" class="form-control" id="update_book_id" name="update_book_id"
+                                required>
                         </div>
                         <div class="mb-3">
                             <label for="update_book_title" class="form-label">Title</label>
@@ -250,8 +243,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="update_category_id" class="form-label">Category ID</label>
-                            <input type="number" class="form-control" id="update_category_id" name="update_category_id"
-                                required>
+                            <input type="number" class="form-control" id="update_category_id"
+                                name="update_category_id" required>
                         </div>
                         <div class="mb-3">
                             <label for="update_available_books" class="form-label">Available Books</label>
@@ -286,7 +279,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
