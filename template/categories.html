@@ -145,7 +145,7 @@
             // Function to fetch categories
             function fetchCategories() {
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/categories',
+                    url: 'http://40.85.131.117:5000/categories',
                     type: 'GET',
                     success: function (data) {
                         var categories = data;
@@ -176,7 +176,7 @@
                 var category_name = $('#category_name').val();
 
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/categories',
+                    url: 'http://40.85.131.117:5000/categories',
                     type: 'POST',
                     contentType: 'application/json',
                     data:JSON.stringify( {
@@ -200,7 +200,7 @@
                 var category_name = $('#update_category_name').val();
 
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/categories/' + category_id,
+                    url: 'http://40.85.131.117:5000/categories/' + category_id,
                     type: 'PUT',
                     contentType: 'application/json',
                     data: JSON.stringify({
@@ -223,7 +223,7 @@
                 var category_id = $('#delete_category_id').val();
 
                 $.ajax({
-                    url: 'http://127.0.0.1:5000/categories/' + category_id,
+                    url: 'http://40.85.131.117:5000/categories/' + category_id,
                     type: 'DELETE',
                     success: function () {
                         // Category deleted successfully
