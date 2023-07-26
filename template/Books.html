@@ -117,8 +117,8 @@
 
             $('#addBookForm').submit(function (event) {
                 event.preventDefault();
-                var book_title = $('#book_title').val();
-                var book_author = $('#book_author').val();
+                var title = $('#title').val();
+                var author = $('#author').val();
                 var category_id = $('#category_id').val();
                 var available_books = $('#available_books').val();
 
@@ -127,8 +127,8 @@
                     type: 'POST',
                     ontentType: 'application/json',
                     data: JSON.stringify({
-                        title: book_title,
-                        author: book_author,
+                        title: title,
+                        author: author,
                         category_id: category_id,
                         available_books: available_books
                     }),
